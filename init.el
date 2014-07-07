@@ -1,8 +1,20 @@
-(setq visible-bell nil
-      inhibit-startup-message t)
+(setq inhibit-startup-message t)
+(setq ring-bell-function (lambda ())) ;; disable bell
 
 (tool-bar-mode -1)
 (menu-bar-mode -1)
+
+;;;; delete selected region by backspace
+(delete-selection-mode t)
+;; TODO need hook for paredit, because it uses it's own binding on backspace
+
+;; CUA mode
+(cua-mode t)
+(setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
+(transient-mark-mode 1)               ;; No region when it is not highlighted
+(setq cua-keep-region-after-copy t)   ;; Standard Windows behaviour
+
+(setq-default indent-tabs-mode nil)
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
@@ -12,7 +24,6 @@
 (package-initialize)
 
 (require 'package)
-
 
 (defun ensure-packages (&rest packages)
   (dolist (pkg packages)
@@ -25,7 +36,8 @@
  'paredit
  'rainbow-delimiters
  'color-theme
- 'color-theme-sanityinc-tomorrow)
+ 'color-theme-sanityinc-tomorrow
+ 'slime)
 
 
 (defun goto-match-paren (arg)
@@ -35,14 +47,16 @@ vi style of % jumping to matching brace."
   (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
         ((looking-at "\\s\)") (forward-char 1) (backward-list ))))
 
+;; (defun delete-region-or-char-forward (n)
+;;   (interactive "p")
+;;   (if (use-region-p)
+;;       (delete-region (region-beginning) (region-end))
+;;     (delete-char n)))
+
 ;;(global-set-key (kbd "C-/") 'auto-complete)
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
 (global-set-key (kbd "M-r") 'query-replace-regexp)
-
-(global-set-key (kbd "C-M-s") 'isearch-forward)
-(global-set-key (kbd "C-M-r") 'isearch-backward)
-(global-set-key (kbd "C-M-r") 'query-replace)
 
 (global-set-key (kbd "C-%") 'goto-match-paren)
 (global-set-key (kbd "RET") 'newline-and-indent)
@@ -50,6 +64,8 @@ vi style of % jumping to matching brace."
 
 (global-set-key (kbd "<f10>") 'menu-bar-mode)
 (global-set-key (kbd "<f9>") 'shell)
+
+;;(global-set-key (kbd "<delete>") 'delete-region-or-char-forward)
 
 (show-paren-mode 1)
 (setq show-paren-delay 0)
@@ -63,6 +79,9 @@ vi style of % jumping to matching brace."
 (setq undo-tree-auto-save-history t)
 (setq undo-tree-visualizer-timestamps t)
 (global-undo-tree-mode)
+
+(global-set-key (kbd "C-y") 'undo-tree-redo)
+(global-set-key (kbd "C-z") 'undo-tree-undo)
 
 (defun hook-name (mode)
   (intern (concat (symbol-name mode) "-mode-hook")))
@@ -78,7 +97,7 @@ vi style of % jumping to matching brace."
 (setq color-theme-is-global t)
 (color-theme-initialize)
 (setq custom-safe-themes t)
-(load-theme 'sanityinc-tomorrow-eighties)
+(load-theme 'sanityinc-tomorrow-bright)
 
 (require 'saveplace)
 (setq-default save-place t)
@@ -100,5 +119,3 @@ vi style of % jumping to matching brace."
 
 (add-hook 'prog-mode-hook 'esk-pretty-lambdas)
 (add-hook 'prog-mode-hook 'esk-add-watchwords)
-
-
