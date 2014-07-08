@@ -4,10 +4,6 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 
-;;;; delete selected region by backspace
-(delete-selection-mode t)
-;; TODO need hook for paredit, because it uses it's own binding on backspace
-
 ;; CUA mode
 (cua-mode t)
 (setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
@@ -47,12 +43,6 @@ vi style of % jumping to matching brace."
   (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
         ((looking-at "\\s\)") (forward-char 1) (backward-list ))))
 
-;; (defun delete-region-or-char-forward (n)
-;;   (interactive "p")
-;;   (if (use-region-p)
-;;       (delete-region (region-beginning) (region-end))
-;;     (delete-char n)))
-
 ;;(global-set-key (kbd "C-/") 'auto-complete)
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
@@ -64,8 +54,6 @@ vi style of % jumping to matching brace."
 
 (global-set-key (kbd "<f10>") 'menu-bar-mode)
 (global-set-key (kbd "<f9>") 'shell)
-
-;;(global-set-key (kbd "<delete>") 'delete-region-or-char-forward)
 
 (show-paren-mode 1)
 (setq show-paren-delay 0)
@@ -89,6 +77,26 @@ vi style of % jumping to matching brace."
 (require 'paredit)
 (dolist (mode '(emacs-lisp lisp clojure scheme))
   (add-hook (hook-name mode) 'paredit-mode))
+
+;;(global-set-key (kbd "<backspace>") 'delete-region-or-default-action)
+;;;; delete selected region by backspace
+;;(delete-selection-mode t)
+;; TODO need hook for paredit, because it uses it's own binding on backspace
+
+;; (define-minor-mode ez-kill-region-with-backspace-mode
+;;   "Smart completion"
+;;   :keymap (let ((map (make-sparse-keymap)))
+;;             (define-key map (kbd "<backspace>") 'ez-kill-region-with-backspace)
+;;             map))
+
+;; (defun ez-kill-region-with-backspace ()
+;;   (interactive)
+;;   (if (use-region-p)
+;;       (delete-region (region-beginning) (region-end))
+;;     (let ((ez-kill-region-with-backspace-mode nil))
+;;       (call-interactively (key-binding (kbd "<backspace>"))))))
+
+;; (ez-kill-region-with-backspace-mode t)
 
 (require 'rainbow-delimiters)
 (global-rainbow-delimiters-mode)
