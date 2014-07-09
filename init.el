@@ -33,7 +33,9 @@
  'rainbow-delimiters
  'color-theme
  'color-theme-sanityinc-tomorrow
- 'slime)
+ 'slime
+ 'ghc
+ 'haskell-mode)
 
 
 (defun goto-match-paren (arg)
@@ -75,7 +77,7 @@ vi style of % jumping to matching brace."
   (intern (concat (symbol-name mode) "-mode-hook")))
 
 (require 'paredit)
-(dolist (mode '(emacs-lisp lisp clojure scheme))
+(dolist (mode '(emacs-lisp lisp clojure scheme haskell))
   (add-hook (hook-name mode) 'paredit-mode))
 
 ;;(global-set-key (kbd "<backspace>") 'delete-region-or-default-action)
@@ -113,12 +115,18 @@ vi style of % jumping to matching brace."
 
 ;; Took this from:
 ;; https://github.com/technomancy/emacs-starter-kit/blob/v2/starter-kit-defuns.el
+(defun put-greek-lambda ()
+  (progn (compose-region (match-beginning 1) (match-end 1)
+                                    ,(make-char 'greek-iso8859-7 107))
+                    nil))
+
 (defun esk-pretty-lambdas ()
   (font-lock-add-keywords
-   nil `(("(?\\(lambda\\>\\)"
-          (0 (progn (compose-region (match-beginning 1) (match-end 1)
-                                    ,(make-char 'greek-iso8859-7 107))
-                    nil))))))
+   nil `(("(?\\(lambda\\>\\)" (0 (put-greek-lambda))))))
+
+;; (defun esk-haskell-pretty-lambdas ()
+;;   (font-lock-add-keywords
+;;    nil `(("(?\\(\\\>\\)" (0 (put-greek-lambda))))))
 
 (defun esk-add-watchwords ()
   (font-lock-add-keywords
@@ -127,3 +135,7 @@ vi style of % jumping to matching brace."
 
 (add-hook 'prog-mode-hook 'esk-pretty-lambdas)
 (add-hook 'prog-mode-hook 'esk-add-watchwords)
+
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+;;(add-hook 'haskell-mode-hook 'esk-haskell-pretty-lambdas)
+
