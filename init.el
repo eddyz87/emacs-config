@@ -59,7 +59,7 @@ vi style of % jumping to matching brace."
 
 (show-paren-mode 1)
 (setq show-paren-delay 0)
-(setq show-paren-style 'expression)
+(setq show-paren-style 'parenthesis)
 
 (require 'auto-complete)
 (setq ac-use-quick-help t)
@@ -133,8 +133,8 @@ vi style of % jumping to matching brace."
    nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
           1 font-lock-warning-face t))))
 
-(add-hook 'prog-mode-hook 'esk-pretty-lambdas)
-(add-hook 'prog-mode-hook 'esk-add-watchwords)
+;;(add-hook 'prog-mode-hook 'esk-pretty-lambdas)
+;;(add-hook 'prog-mode-hook 'esk-add-watchwords)
 
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 ;;(add-hook 'haskell-mode-hook 'esk-haskell-pretty-lambdas)
