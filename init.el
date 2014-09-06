@@ -30,12 +30,19 @@
  'undo-tree
  'auto-complete
  'paredit
+ 'smartparens
  'rainbow-delimiters
  'color-theme
  'color-theme-sanityinc-tomorrow
  'slime
  'ghc
- 'haskell-mode)
+ 'haskell-mode
+ 'function-args
+ 'company
+ 'company-c-headers
+ 'company-ghc
+ ;;'ggtags
+ )
 
 
 (defun goto-match-paren (arg)
@@ -61,9 +68,15 @@ vi style of % jumping to matching brace."
 (setq show-paren-delay 0)
 (setq show-paren-style 'parenthesis)
 
-(require 'auto-complete)
-(setq ac-use-quick-help t)
-(global-auto-complete-mode)
+;; (require 'auto-complete)
+;; (setq ac-use-quick-help t)
+;; (global-auto-complete-mode)
+
+(require 'company)
+(add-hook 'after-init-hook 'global-company-mode)
+(add-to-list 'company-backends 'company-c-headers)
+
+(global-set-key [(control tab)] 'company-complete-common)
 
 (require 'undo-tree)
 (setq undo-tree-auto-save-history t)
@@ -80,25 +93,8 @@ vi style of % jumping to matching brace."
 (dolist (mode '(emacs-lisp lisp clojure scheme haskell))
   (add-hook (hook-name mode) 'paredit-mode))
 
-;;(global-set-key (kbd "<backspace>") 'delete-region-or-default-action)
-;;;; delete selected region by backspace
-;;(delete-selection-mode t)
-;; TODO need hook for paredit, because it uses it's own binding on backspace
-
-;; (define-minor-mode ez-kill-region-with-backspace-mode
-;;   "Smart completion"
-;;   :keymap (let ((map (make-sparse-keymap)))
-;;             (define-key map (kbd "<backspace>") 'ez-kill-region-with-backspace)
-;;             map))
-
-;; (defun ez-kill-region-with-backspace ()
-;;   (interactive)
-;;   (if (use-region-p)
-;;       (delete-region (region-beginning) (region-end))
-;;     (let ((ez-kill-region-with-backspace-mode nil))
-;;       (call-interactively (key-binding (kbd "<backspace>"))))))
-
-;; (ez-kill-region-with-backspace-mode t)
+(require 'smartparens)
+(add-hook 'c-mode-common-hook 'smartparens-mode)
 
 (require 'rainbow-delimiters)
 (global-rainbow-delimiters-mode)
@@ -139,3 +135,33 @@ vi style of % jumping to matching brace."
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 ;;(add-hook 'haskell-mode-hook 'esk-haskell-pretty-lambdas)
 
+;; CEDET and Co to get C development working
+;;(require 'cedet)
+(require 'cc-mode)
+(require 'semantic)
+
+(global-semanticdb-minor-mode 1)
+(global-semantic-idle-scheduler-mode 1)
+
+(semantic-mode 1)
+
+;; use gnu global
+;;(when (cedet-gnu-global-version-check t))
+(semanticdb-enable-gnu-global-databases 'c-mode)
+(semanticdb-enable-gnu-global-databases 'c++-mode)
+
+(global-semantic-idle-summary-mode 1)
+(global-semantic-stickyfunc-mode 1)
+
+(require 'function-args)
+(fa-config-default)
+(define-key c-mode-map [(control tab)] 'moo-complete)
+(define-key c++-mode-map  [(control tab)] 'moo-complete)
+
+(add-hook 'c-mode-common-hook 'hs-minor-mode)
+
+;; (require 'ggtags)
+;; (add-hook 'c-mode-common-hook
+;;           (lambda ()
+;;             (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
+;;               (ggtags-mode 1))))
