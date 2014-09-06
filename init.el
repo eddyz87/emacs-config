@@ -41,6 +41,7 @@
  'company
  'company-c-headers
  'company-ghc
+ 'cmake-mode
  ;;'ggtags
  )
 
@@ -159,6 +160,15 @@ vi style of % jumping to matching brace."
 (define-key c++-mode-map  [(control tab)] 'moo-complete)
 
 (add-hook 'c-mode-common-hook 'hs-minor-mode)
+
+(add-to-list 'auto-mode-alist '("CMakeLists\\.txt" . cmake-mode))
+
+(define-key c-mode-map (kbd "<f5>") (lambda ()
+                                      (interactive)
+                                      (setq-local compilation-read-command nil)
+                                      (call-interactively 'compile)))
+
+
 
 ;; (require 'ggtags)
 ;; (add-hook 'c-mode-common-hook
