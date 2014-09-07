@@ -163,6 +163,9 @@ vi style of % jumping to matching brace."
 
 (add-to-list 'auto-mode-alist '("CMakeLists\\.txt" . cmake-mode))
 
+(require 'compile)
+(setq compile-command "make -k -j2")
+
 (define-key c-mode-map (kbd "<f5>") (lambda ()
                                       (interactive)
                                       (setq-local compilation-read-command nil)
