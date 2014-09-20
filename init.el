@@ -34,7 +34,7 @@
  'rainbow-delimiters
  'color-theme
  'color-theme-sanityinc-tomorrow
- 'slime
+ ;;'slime
  'ghc
  'haskell-mode
  'function-args
